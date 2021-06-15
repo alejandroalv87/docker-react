@@ -1,14 +1,24 @@
-language: generic 
-# Every time we are using docker we need to have superuser permissions to execute this build
 sudo: required
-# TravisCI will install a copy of docker
+language: generic
+
 services:
-  - docker 
-# Steps/commands to occur before deploying our project or running our test
+  - docker
+
 before_install:
   -  docker build -t alejandroalv87/docker-react -f Dockerfile.dev .
-# Contain the commands to run our test suite. TrvisCI will keep monitoring the status code of this  
-# if other than 0 it will assume the build fail
+
 script:
   - docker run -e CI=true alejandroalv87/docker-react npm run test -- --coverage
-#Added -- --coverage in order for this container to run and exit
+
+#How travisCI will deploy our application
+deploy:
+  provider: elasticbeanstalk            #You can choose many other providers such as AWS,Azure, DigitalOcan
+  region: 'us-east-1'                   #Where you created the elasticbeanstalk instance taken from the LB URL http://dockerreact-env.eba-ea9uezfk.us-east-2.elasticbeanstalk.com/
+  app: 'docker-react'                   #Configured during the creation of elasticbeanstalk
+  env: 'Dockerreact-env'                     
+  bucket_name: 'elasticbeanstalk-us-east-2-777405362277' #it will take all the files inside your git repo, zip them and copy here (s3 bucket which is let's say a hard drive running on AWS) created automatically druing creation of elasticbeanstalk (Services+S3 to know the bucket name)
+  bucket_path: 'docker'                 # Same as the app name, it is a folder for this specific deployment (created after 1st deployment)
+  on:
+    branch: master                      #everytime we merge to master (no to any branch) we want to deploy automatically 
+  access_key_id: "$AWS_access_key_id"   # create env variables in travisCI so better security
+  secret_access_key: "$AWS_secret_access_key"
