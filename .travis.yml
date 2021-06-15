@@ -1,0 +1,14 @@
+language: generic 
+# Every time we are using docker we need to have superuser permissions to execute this build
+sudo: required
+# TravisCI will install a copy of docker
+services:
+  - docker 
+# Steps/commands to occur before deploying our project or running our test
+before_install:
+  -  docker build -t alejandroalv87/docker-react -f Dockerfile.dev .
+# Contain the commands to run our test suite. TrvisCI will keep monitoring the status code of this  
+# if other than 0 it will assume the build fail
+script:
+  - docker run -e CI=true alejandroalv87/docker-react npm run test -- --coverage
+#Added -- --coverage in order for this container to run and exit
