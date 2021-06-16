@@ -13,12 +13,12 @@ script:
 #How travisCI will deploy our application
 deploy:
   provider: elasticbeanstalk            #You can choose many other providers such as AWS,Azure, DigitalOcan
-  region: 'us-east-1'                   #Where you created the elasticbeanstalk instance taken from the LB URL http://dockerreact-env.eba-ea9uezfk.us-east-2.elasticbeanstalk.com/
+  region: 'us-east-2'                   #Where you created the elasticbeanstalk instance taken from the LB URL http://dockerreact-env.eba-ea9uezfk.us-east-2.elasticbeanstalk.com/
   app: 'docker-react'                   #Configured during the creation of elasticbeanstalk
-  env: 'Dockerreact-env'                     
+  env: 'Dockerreact-env'
   bucket_name: 'elasticbeanstalk-us-east-2-777405362277' #it will take all the files inside your git repo, zip them and copy here (s3 bucket which is let's say a hard drive running on AWS) created automatically druing creation of elasticbeanstalk (Services+S3 to know the bucket name)
-  bucket_path: 'docker'                 # Same as the app name, it is a folder for this specific deployment (created after 1st deployment)
+  bucket_path: 'docker-react'                 # Same as the app name, it is a folder for this specific deployment (created after 1st deployment)
   on:
-    branch: master                      #everytime we merge to master (no to any branch) we want to deploy automatically 
+    branch: master                      #everytime we merge to master (no to any branch) we want to deploy automatically
   access_key_id: "$AWS_access_key_id"   # create env variables in travisCI so better security
   secret_access_key: "$AWS_secret_access_key"
